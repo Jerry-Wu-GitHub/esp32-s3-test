@@ -28,15 +28,21 @@ async def notification_handler(sender, data_bytes):
             print(line)
 
 
-
 async def ainput(prompt: str = "") -> str:
-    """在线程中执行 input，避免阻塞 asyncio 事件循环。"""
+    """
+    在线程中执行 input，避免阻塞 asyncio 事件循环。
+    """
     return await asyncio.to_thread(input, prompt)
 
 
-async def send_chunks(client: BleakClient, data: bytes,
-                      chunk_size: int = CHUNK_SIZE):
-    """BLE 单次写入 payload 受 MTU 限制，这里手动分片。"""
+async def send_chunks(
+    client: BleakClient,
+    data: bytes,
+    chunk_size: int = CHUNK_SIZE
+):
+    """
+    BLE 单次写入 payload 受 MTU 限制，这里手动分片。
+    """
     total = len(data)
     n = (total + chunk_size - 1) // chunk_size
     print(f"发送 {total} 字节，分 {n} 片")

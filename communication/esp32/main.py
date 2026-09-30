@@ -18,8 +18,11 @@ _BLE_CHUNK = 20  # 保守值，对应默认 MTU 23 的 payload
 
 _send_lock = asyncio.Lock()
 
+
 async def ble_send(tx_char, data: bytes, chunk: int = _BLE_CHUNK):
-    """把长消息切成 ≤chunk 字节的分片逐条 notify。同一时刻只有一条消息在发。"""
+    """
+    把长消息切成 ≤chunk 字节的分片逐条 notify。同一时刻只有一条消息在发。
+    """
     payload = data + b"\n"
     async with _send_lock:
         for i in range(0, len(payload), chunk):
@@ -28,6 +31,9 @@ async def ble_send(tx_char, data: bytes, chunk: int = _BLE_CHUNK):
 
 
 async def scan_wlan(wlan, tx_char):
+    """
+    扫描可连接的 WLAN。
+    """
     networks = wlan.scan()
     print(f"扫描到 {len(networks)} 个网络:")
     await ble_send(tx_char, f"扫描到 {len(networks)} 个网络:".encode("utf-8"))
@@ -41,6 +47,9 @@ async def scan_wlan(wlan, tx_char):
 
 
 def get_ip():
+    """
+    发送一个网络请求用于测试。
+    """
     response = urequests.get('http://httpbin.org/ip')
     print('状态码:', response.status_code)
     print('响应内容:', response.text)
@@ -48,6 +57,9 @@ def get_ip():
 
 
 async def receive(rx_char, tx_char, wlan):
+    """
+    收到客户端消息时要做的行动。
+    """
     buffer = b""
     while True:
         connection, bytes_data = await rx_char.written()
@@ -111,7 +123,6 @@ async def receive(rx_char, tx_char, wlan):
             )
 
 
-
 async def peripheral(
     service_uuid: str,
     rx_char: aioble.Characteristic,
@@ -156,6 +167,7 @@ async def main():
     peripheral_task = peripheral(_SERVICE_UUID, rx_char, tx_char, wlan)
     receive_task = receive(rx_char, tx_char, wlan)
     await asyncio.gather(peripheral_task, receive_task)
+
 
 
 if __name__ == '__main__':

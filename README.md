@@ -1,5 +1,13 @@
 # ESP32 实验
 
+---
+
+[toc]
+
+---
+
+## 基础配置
+
 - 开发板：ESP32-S3 CH343 N16R8 TYPE-C
 - 开发语言：MicroPython
 - 固件：[ESP32_GENERIC_S3-SPIRAM_OCT-20260824-v1.29.0](https://micropython.org/resources/firmware/ESP32_GENERIC_S3-SPIRAM_OCT-20260824-v1.29.0.bin)
